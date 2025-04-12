@@ -38,7 +38,7 @@ jobs:
       - name: Run tests with Pytest
         run: pytest
 
-    build-and-push-docker:
+  build-and-push-docker:
     needs: test
     runs-on: ubuntu-latest
     environment: production
@@ -58,18 +58,16 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: |
-            hetvipatel36/fastapi_spring2024:latest
-            hetvipatel36/fastapi_spring2024:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
+          tags: hetvipatel36/fastapi_spring2024:latest # Uses the Git SHA for tagging
+          platforms: linux/amd64,linux/arm64 # Multi-platform support
           cache-from: type=registry,ref=hetvipatel36/fastapi_spring2024:cache
           cache-to: type=inline,mode=max
           
       - name: Scan the Docker image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'hetvipatel36/fastapi_spring2024:${{ github.sha }}'
+          image-ref: 'hetvipatel36/fastapi_spring2024:latest'
           format: 'table'
-          exit-code: '1'
+          exit-code: '1' # Fail the job if vulnerabilities are found
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH'
