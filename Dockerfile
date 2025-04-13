@@ -1,6 +1,7 @@
 # Use an official lightweight Python image.
 # 3.12-slim variant is chosen for a balance between size and utility.
-FROM python:3.10-slim-bullseye as builder
+FROM python:3.10-slim AS builder
+
 
 
 # Set environment variables:
@@ -21,11 +22,11 @@ WORKDIR /myapp
 
 # Install system dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc libpq-dev \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends gcc libpq-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
 
 # Copy only the requirements, to cache them in Docker layer
 COPY ./requirements.txt /myapp/requirements.txt
